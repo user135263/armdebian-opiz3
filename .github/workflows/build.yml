@@ -66,8 +66,7 @@ jobs:
             BRANCH=current \
             RELEASE=resolute \
             BUILD_DESKTOP=no \
-            BUILD_MINIMAL=no \
-            BUILD_SERVER=yes \
+            BUILD_MINIMAL=YES \
             BETA=no \
             KERNEL_CONFIGURE=no \
             KERNEL_GIT=shallow
