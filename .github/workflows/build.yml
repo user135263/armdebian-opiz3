@@ -77,12 +77,36 @@ jobs:
           echo "=== output/images ==="
           ls -lah output/images/ || true
 
+      - name: Compress Armbian image
+        if: success()
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y zstd
+
+          cd output/images
+
+          for img in *.img; do
+            [ -f "$img" ] || continue
+
+            echo "Compressing $img"
+            zstd -T0 -6 --progress "$img" -o "$img.zst"
+
+            echo "Original size:"
+            du -h "$img"
+
+            echo "Compressed size:"
+            du -h "$img.zst"
+          done
+
       - name: Upload image
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: orangepizero3.csc
-          path: output/images/*
+          name: orangepizero3-image
+          path: |
+            output/images/*.img.zst
+            output/images/*.img.sha
+            output/images/*.img.txt
           if-no-files-found: error
 
       - name: Create GitHub Release
@@ -92,6 +116,9 @@ jobs:
           tag_name: ${{ inputs.version }}
           name: Armbian Orange Pi Zero3 ${{ inputs.version }}
           generate_release_notes: true
-          files: output/images/*
+          files: |
+            output/images/*.img.zst
+            output/images/*.img.sha
+            output/images/*.img.txt
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
