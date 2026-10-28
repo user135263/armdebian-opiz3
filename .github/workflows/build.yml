@@ -62,7 +62,7 @@ jobs:
       - name: Build Armbian
         run: |
           ./compile.sh \
-            BOARD=orangepizero3.csc \
+            BOARD=orangepizero3 \
             BRANCH=current \
             RELEASE=resolute \
             BUILD_DESKTOP=no \
